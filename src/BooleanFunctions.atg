@@ -1,0 +1,185 @@
+#include "predefined-operations.h"
+#include "semantic-data.h"
+#include "exceptions.h"
+#include <string>
+#include <vector>
+#include <iostream>
+#include <boost/format.hpp>
+#include <polishboolfunctions/Operand.h>
+#include <polishboolfunctions/Constant.h>
+#include <polishboolfunctions/Variable.h>
+#include <polishboolfunctions/AbstractOperation.h>
+#include <polishboolfunctions/NotOperation.h>
+#include <polishboolfunctions/BinaryOperation.h>
+#include <polishboolfunctions/RpnFunctionOperation.h>
+
+namespace PBF = PolishBoolFunctions;
+
+
+COMPILER BooleanFunctions
+
+  Sem::FunctionContainer functions;
+
+
+CHARACTERS
+  upperCaseLetter = 'A'..'Z' .
+  lowerCaseLetter = 'a'..'z' .
+  letter = upperCaseLetter + lowerCaseLetter .
+  digit = '0'..'9' .
+  bit = "01" .
+
+
+TOKENS
+  functionName = upperCaseLetter {letter | digit} .
+  parameterName = lowerCaseLetter {letter | digit} .
+  numericalLiteral = bit .
+
+
+COMMENTS FROM "/*" TO "*/" NESTED
+COMMENTS FROM "//" TO '\n'
+
+IGNORE '\r' + '\n' + '\t'
+
+
+PRODUCTIONS
+
+  BooleanFunctions = FunctionDefinition {FunctionDefinition} .
+
+  FunctionDefinition = PostfixFuncDefinition | InfixFuncDefinition .
+
+  PostfixFuncDefinition (. Sem::FunctionDefinition& current = functions.addUnspecifiedFunc(); .)
+  =
+    "POSTFIXFUNC"
+    FunctionHeader<current.header> (. functions.indexLastFunc(current.header.name); .)
+    PostfixExpression<current.rpn, current.header>
+    ";"
+    (. PBF::checkCorrectnessOfRpn(current.rpn); .) .
+
+  InfixFuncDefinition (. Sem::FunctionDefinition& current = functions.addUnspecifiedFunc(); .)
+  =
+    "INFIXFUNC"
+    FunctionHeader<current.header> (. functions.indexLastFunc(current.header.name); .)
+    InfixExpression<current.rpn, current.header>
+    ";"
+    (. PBF::checkCorrectnessOfRpn(current.rpn); .) .
+
+  FunctionHeader<Sem::FunctionHeader& header>
+  =
+    functionName (.
+                    header.name = wide2string(t->val);
+                    if (Sem::predefinedOperation(header.name))
+                        SemErr((boost::wformat(L"There is predefined function with name %1%") % t->val).str().c_str());
+                    if (functions.isDefined(header.name))
+                        SemErr((boost::wformat(L"Function '%1%' is already defined") % t->val).str().c_str());
+                 .)
+    "(" ParamList<header.params>
+    ")" "=" .
+
+  ParamList<Sem::FunctionHeader::ParamMap& params>
+                        (. typedef Sem::FunctionHeader::ParamMap::value_type Pair;
+                           Sem::FunctionHeader::Arity argIndex = 0; .)
+  =
+    [ parameterName     (. params.insert(Pair(wide2string(t->val), argIndex++)); .)
+    { "," parameterName (. params.insert(Pair(wide2string(t->val), argIndex++)); .)
+    } ] .
+
+  PostfixExpression<PBF::Rpn& rpn, const Sem::FunctionHeader& header>
+      (. using PBF::TokenPtr;
+         PBF::Operand* operand; .)
+  =
+    Operand<operand,header>   (. rpn.push_back(TokenPtr(operand)); .)
+    { Operand<operand,header> (. rpn.push_back(TokenPtr(operand)); .)
+    | (. PBF::AbstractOperation* op; .) FunctionNameUsing<op> (. rpn.push_back(TokenPtr(op)); .)
+    } .
+
+  InfixExpression<PBF::Rpn& rpn, const Sem::FunctionHeader& header>
+  =
+    AdditiveTerm<rpn,header> PrefixedByOperatorInfixExpression<rpn,header> .
+
+  PrefixedByOperatorInfixExpression<PBF::Rpn& rpn, const Sem::FunctionHeader& header>
+  =
+    [ "==" InfixExpression<rpn,header>
+      (. rpn.push_back(PBF::TokenPtr(PBF::BinaryOperators::Equal.clone())); .)
+    ] .
+
+  AdditiveTerm<PBF::Rpn& rpn, const Sem::FunctionHeader& header>
+  =
+    MultiplicativeTerm<rpn,header> PrefixedByOperatorAdditiveTerm<rpn,header> .
+
+  PrefixedByOperatorAdditiveTerm<PBF::Rpn& rpn, const Sem::FunctionHeader& header>
+  =
+    [ (. PBF::BinaryOperation* op; .)
+      ( "||" (. op = PBF::BinaryOperators::Or.clone(); .)
+      | "^^" (. op = PBF::BinaryOperators::Xor.clone(); .) )
+      AdditiveTerm<rpn,header>
+      (. rpn.push_back(PBF::TokenPtr(op)); .)
+    ] .
+
+  MultiplicativeTerm<PBF::Rpn& rpn, const Sem::FunctionHeader& header>
+  =
+    NegativeTerm<rpn,header> PrefixedByOperatorMultiplicativeTerm<rpn,header> .
+
+  PrefixedByOperatorMultiplicativeTerm<PBF::Rpn& rpn, const Sem::FunctionHeader& header>
+  =
+    [ "&&" MultiplicativeTerm<rpn,header>
+      (. rpn.push_back(PBF::TokenPtr(PBF::BinaryOperators::And.clone())); .)
+    ] .
+
+  NegativeTerm<PBF::Rpn& rpn, const Sem::FunctionHeader& header>
+  =
+    "!" SingleExpression<rpn,header> (. rpn.push_back(PBF::TokenPtr(PBF::UnaryOperators::Not.clone())); .)
+    | SingleExpression<rpn,header> .
+
+  SingleExpression<PBF::Rpn& rpn, const Sem::FunctionHeader& header>
+  =
+    (. PBF::AbstractOperation* op; .) FunctionNameUsing<op>
+    "(" InfixExpressionList<rpn,header> ")"
+    (. rpn.push_back(PBF::TokenPtr(op)); .)
+    |
+    "(" InfixExpression<rpn,header> ")"
+    |
+    (. PBF::Operand* operand; .) Operand<operand,header> (. rpn.push_back(PBF::TokenPtr(operand)); .) .
+
+  InfixExpressionList<PBF::Rpn& rpn, const Sem::FunctionHeader& header>
+  =
+    [ InfixExpression<rpn,header>
+    { "," InfixExpression<rpn,header> }
+    ] .
+
+  FunctionNameUsing<PBF::AbstractOperation*& operation>
+  =
+    functionName (.
+                    Sem::String name(wide2string(t->val));
+                    operation = Sem::predefinedOperation(name);
+                    if (!operation)
+                        try
+                        {
+                            operation = new PBF::RpnFunctionOperation(functions.findRpnFunction(name));
+                        }
+                        catch (Sem::FunctionHasNotDefined& error)
+                        {
+                            SemErr(string2wide(error.what()).c_str());
+                        }
+                 .) .
+
+  Operand<PBF::Operand*& operand, const Sem::FunctionHeader& header>
+  =
+    (. PBF::Constant* constant; .) Literal<constant> (. operand = constant; .)
+    | parameterName (.
+                       try
+                       {
+                           operand = new PBF::Variable(header.findParameter(wide2string(t->val)));
+                       }
+                       catch (Sem::UnknownParameter& error)
+                       {
+                           SemErr(string2wide(error.what()).c_str());
+                       }
+                    .) .
+
+  Literal<PBF::Constant*& value>
+  =
+    numericalLiteral (. value = new PBF::Constant(wide2string(t->val) == "1"); .)
+    | "FALSE" (. value = new PBF::Constant(false); .)
+    | "TRUE"  (. value = new PBF::Constant(true); .) .
+
+END BooleanFunctions.

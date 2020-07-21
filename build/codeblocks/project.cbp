@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="libboolfunccompiler" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug-gcc">
+				<Option output="../../bin/codeblocks/Debug-gcc/libboolfunccompiler" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../tests/data/" />
+				<Option object_output="../../obj/codeblocks/Debug-gcc/" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release-gcc">
+				<Option output="../../bin/codeblocks/Release-gcc/libboolfunccompiler" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../tests/data/" />
+				<Option object_output="../../obj/codeblocks/Release-gcc/" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O3" />
+					<Add option="-DNDEBUG=" />
+				</Compiler>
+			</Target>
+			<Target title="Debug-icc">
+				<Option output="../../bin/codeblocks/Debug-icc/libboolfunccompiler" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../tests/data/" />
+				<Option object_output="../../obj/codeblocks/Debug-icc/" />
+				<Option type="3" />
+				<Option compiler="icc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add library="imf" />
+				</Linker>
+			</Target>
+			<Target title="Release-icc">
+				<Option output="../../bin/codeblocks/Release-icc/libboolfunccompiler" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../tests/data/" />
+				<Option object_output="../../obj/codeblocks/Release-icc/" />
+				<Option type="3" />
+				<Option compiler="icc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-DNDEBUG=" />
+				</Compiler>
+				<Linker>
+					<Add library="imf" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Linker>
+			<Add library="polishboolfunctions" />
+		</Linker>
+		<Unit filename="../../src/BooleanFunctions.atg">
+			<Option compile="1" />
+		</Unit>
+		<Unit filename="../../src/exceptions.cpp" />
+		<Unit filename="../../src/exceptions.h" />
+		<Unit filename="../../src/predefined-operations.cpp" />
+		<Unit filename="../../src/predefined-operations.h" />
+		<Unit filename="../../src/semantic-data.h" />
+		<Unit filename="../../src/strconvertions.cpp" />
+		<Unit filename="../../src/strconvertions.h" />
+		<Unit filename="../../src/types.h" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+			<envvars />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

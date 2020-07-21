@@ -1,0 +1,147 @@
+# depslib dependency file v1.0
+1267645929 source:/home/anthony/projects/boolfunccompiler/src/BooleanFunctions.atg
+	"predefined-operations.h"
+	"semantic-data.h"
+	"exceptions.h"
+	"test.h"
+	<string>
+	<vector>
+	<iostream>
+	<boost/format.hpp>
+	<polishboolfunctions/Operand.h>
+	<polishboolfunctions/Constant.h>
+	<polishboolfunctions/Variable.h>
+	<polishboolfunctions/AbstractOperation.h>
+	<polishboolfunctions/NotOperation.h>
+	<polishboolfunctions/BinaryOperation.h>
+	<polishboolfunctions/RpnFunctionOperation.h>
+
+1264101519 source:/home/anthony/projects/boolfunccompiler/src/main.cpp
+	"Scanner.h"
+	"Parser.h"
+	<iostream>
+	<polishboolfunctions/exceptions.h>
+
+1267645932 /home/anthony/projects/boolfunccompiler/src/Scanner.h
+	<limits.h>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<wchar.h>
+	<io.h>
+	<fcntl.h>
+
+1267645932 /home/anthony/projects/boolfunccompiler/src/Parser.h
+	"predefined-operations.h"
+	"semantic-data.h"
+	"exceptions.h"
+	"test.h"
+	<string>
+	<vector>
+	<iostream>
+	<boost/format.hpp>
+	<polishboolfunctions/Operand.h>
+	<polishboolfunctions/Constant.h>
+	<polishboolfunctions/Variable.h>
+	<polishboolfunctions/AbstractOperation.h>
+	<polishboolfunctions/NotOperation.h>
+	<polishboolfunctions/BinaryOperation.h>
+	<polishboolfunctions/RpnFunctionOperation.h>
+	"Scanner.h"
+
+1267024915 /home/anthony/projects/boolfunccompiler/src/predefined-operations.h
+	"types.h"
+	<polishboolfunctions/AbstractOperation.h>
+	<polishboolfunctions/BinaryOperation.h>
+
+1264173952 /home/anthony/projects/boolfunccompiler/src/types.h
+	"strconvertions.h"
+	<string>
+
+1264619153 /home/anthony/projects/boolfunccompiler/src/semantic-data.h
+	"types.h"
+	"exceptions.h"
+	<map>
+	<polishboolfunctions/Rpn.h>
+	<polishboolfunctions/RpnFunction.h>
+
+1267027226 source:/home/anthony/projects/boolfunccompiler/src/predefined-operations.cpp
+	"predefined-operations.h"
+	<polishboolfunctions/NotOperation.h>
+	<iostream>
+	"test.h"
+
+1264599751 /home/anthony/projects/boolfunccompiler/src/test.h
+	"semantic-data.h"
+	<ostream>
+	<polishboolfunctions/exceptions.h>
+
+1266846060 source:/home/anthony/projects/boolfunccompiler/src/test.cpp
+	"test.h"
+	<polishboolfunctions/io.h>
+	<polishboolfunctions/plaintext-output.h>
+
+1264173722 /home/anthony/projects/boolfunccompiler/src/strconvertions.h
+	<string>
+
+1264174074 source:/home/anthony/projects/boolfunccompiler/src/strconvertions.cpp
+	"strconvertions.h"
+
+1264619340 /home/anthony/projects/boolfunccompiler/src/exceptions.h
+	"types.h"
+	<polishboolfunctions/exceptions.h>
+
+1264618162 source:/home/anthony/projects/boolfunccompiler/src/exceptions.cpp
+	"exceptions.h"
+	<boost/format.hpp>
+
+1267712936 source:/home/anthony/projects/libboolfunccompiler/src/BooleanFunctions.atg
+	"predefined-operations.h"
+	"semantic-data.h"
+	"exceptions.h"
+	<string>
+	<vector>
+	<iostream>
+	<boost/format.hpp>
+	<polishboolfunctions/Operand.h>
+	<polishboolfunctions/Constant.h>
+	<polishboolfunctions/Variable.h>
+	<polishboolfunctions/AbstractOperation.h>
+	<polishboolfunctions/NotOperation.h>
+	<polishboolfunctions/BinaryOperation.h>
+	<polishboolfunctions/RpnFunctionOperation.h>
+
+1268155409 /home/anthony/projects/libboolfunccompiler/src/predefined-operations.h
+	"types.h"
+	<polishboolfunctions/AbstractOperation.h>
+
+1268155489 /home/anthony/projects/libboolfunccompiler/src/types.h
+	"strconvertions.h"
+	<string>
+
+1268155465 /home/anthony/projects/libboolfunccompiler/src/strconvertions.h
+	<string>
+
+1268155440 /home/anthony/projects/libboolfunccompiler/src/semantic-data.h
+	"types.h"
+	"exceptions.h"
+	<map>
+	<polishboolfunctions/Rpn.h>
+	<polishboolfunctions/RpnFunction.h>
+
+1268155391 /home/anthony/projects/libboolfunccompiler/src/exceptions.h
+	"types.h"
+	<polishboolfunctions/exceptions.h>
+
+1264618162 source:/home/anthony/projects/libboolfunccompiler/src/exceptions.cpp
+	"exceptions.h"
+	<boost/format.hpp>
+
+1267712820 source:/home/anthony/projects/libboolfunccompiler/src/predefined-operations.cpp
+	"predefined-operations.h"
+	<polishboolfunctions/NotOperation.h>
+	<polishboolfunctions/BinaryOperation.h>
+
+1264174074 source:/home/anthony/projects/libboolfunccompiler/src/strconvertions.cpp
+	"strconvertions.h"
+
